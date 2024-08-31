@@ -17,14 +17,13 @@
 
 #include "keymap.h"
 
-/* Layer Keymaps */
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_BS] = LAYOUT_56keys(
         KC_DEL , KC_CIRC, KC_AT  , KC_HASH, KC_LPRN, KC_RPRN,                   KC_DLR , KC_AMPR, KC_ASTR, KC_QUES, KC_EXLM, KC_GRV ,
-        KC_TAB , KC_Q   , KC_W   , KC_F   , KC_P   , KC_B   ,                   KC_J   , KC_L   , KC_U   , KC_Y   , KC_MINS, KC_EQL,
+        KC_TAB , KC_Q   , KC_W   , KC_F   , KC_P   , KC_B   ,                   KC_J   , KC_L   , KC_U   , KC_Y   , KC_MINS, KC_EQL ,
         MT_ESC , KC_A   , KC_R   , KC_S   , KC_T   , KC_G   ,                   KC_M   , KC_N   , KC_E   , KC_I   , KC_O   , RGUI_T(KC_SLSH),
         KC_LALT, KC_Z   , KC_X   , KC_C   , KC_D   , KC_V   ,                   KC_K   , KC_H   , KC_COMM, KC_DOT , KC_QUOT, KC_RALT,
-                                   XXXXXXX, TD_LCTL, OS_LSFT, MT_BSPC, TD_ENT , TD_SPC , TD_BSLS, TD_TABA
+                                   TD_INSP, TD_LCTL, OS_LSFT, MT_BSPC, TD_ENT , TD_SPC , TD_BSLS, TD_TABA
     ),
     [_QW] = LAYOUT_56keys(
         KC_GRV , KC_1   , KC_2   , KC_3   , KC_4   , KC_5   ,                   KC_6   , KC_7   , KC_8   , KC_9   , KC_0   , KC_EQL ,
@@ -33,26 +32,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_LALT, KC_Z   , KC_X   , KC_C   , KC_V   , KC_B   ,                   KC_N   , KC_M   , KC_COMM, KC_DOT , KC_SLSH, KC_RALT,
                                    _______, _______, _______, _______, _______, _______, _______, _______
     ),
-    [_NP] = LAYOUT_56keys(
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+    [_NP] = LAYOUT_42keys(
         XXXXXXX, KC_WH_U, KC_WH_L, KC_MS_U, KC_WH_R, KC_BTN4,                   KC_PAST, KC_7   , KC_8   , KC_9   , KC_PPLS, XXXXXXX,
         XXXXXXX, KC_WH_D, KC_MS_L, KC_MS_D, KC_MS_R, KC_BTN5,                   KC_PSLS, KC_4   , KC_5   , KC_6   , KC_PMNS, XXXXXXX,
         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, TG(_NP),                   KC_PERC, KC_1   , KC_2   , KC_3   , KC_EQL , XXXXXXX,
-                                   XXXXXXX, KC_BTN1, KC_BTN3, KC_BTN2, KC_PENT, KC_0   , KC_DOT , XXXXXXX
+                                            KC_BTN1, KC_BTN3, KC_BTN2, KC_PENT, KC_0   , KC_DOT
     ),
     [_MK] = LAYOUT_56keys(
-        XXXXXXX, TG(_QW), CG_TOGG, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-        KC_TAB , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX, KC_BTN4, KC_MS_U, KC_BTN5, XXXXXXX, XXXXXXX,
-        KC_ESC , KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,                   XXXXXXX, KC_MS_L, KC_MS_D, KC_MS_R, XXXXXXX, XXXXXXX,
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        KC_TAB , TG(_QW), CG_TOGG, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX, KC_BTN4, KC_MS_U, KC_BTN5, KC_WH_U, XXXXXXX,
+        KC_ESC , KC_LGUI, KC_LALT, KC_LSFT, KC_LCTL, XXXXXXX,                   XXXXXXX, KC_MS_L, KC_MS_D, KC_MS_R, KC_WH_D, XXXXXXX,
         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   TG(_MK), KC_WH_L, KC_WH_U, KC_WH_R, XXXXXXX, XXXXXXX,
                                    XXXXXXX, KC_LCTL, KC_LSFT, KC_LALT, KC_BTN1, LT_BTN3, KC_BTN2, KC_WH_D
     ),
-    [_FN] = LAYOUT_56keys(
+    [_FN] = LAYOUT_54keys(
         KC_F1  , KC_F2  , KC_3   , KC_F4  , KC_F5  , KC_F6  ,                   KC_F7  , KC_F8  , KC_F9  , KC_F10 , KC_F11 , KC_F12 ,
         KC_TAB , KC_LCBR, KC_7   , KC_8   , KC_9   , KC_CAPS,                   KC_INS , KC_HOME, KC_UP  , KC_END , KC_RCBR, KC_TAB ,
         KC_ESC , KC_LBRC, KC_4   , KC_5   , KC_6   , CW_TOGG,                   KC_DEL , KC_LEFT, KC_DOWN, KC_RGHT, KC_RBRC, KC_ESC ,
-        KC_LALT, KC_LPRN, KC_1   , KC_2   , KC_3   , TG(_NP),                   TG(_MK), KC_PGUP, KC_LABK, KC_RABK, KC_RPRN, KC_RALT,
-                                   XXXXXXX, KC_DOT , KC_0   , KC_BSPC, KC_ENT , KC_PSCR, KC_PGDN, XXXXXXX
+        _______, KC_LPRN, KC_1   , KC_2   , KC_3   , TG(_NP),                   TG(_MK), KC_PGUP, KC_LABK, KC_RABK, KC_RPRN, _______,
+                                            KC_DOT , KC_0   , KC_BSPC, KC_ENT , KC_PSCR, KC_PGDN
     )
 };
 
@@ -123,6 +121,9 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 #if defined(TAP_DANCE_ENABLE) && defined(INSERT_PLUS_DANCE_ENABLE)
     case TD_INSP:
         return TAPPING_TERM * 2;
+#endif
+#if defined(TAP_DANCE_ENABLE) && defined(SPACE_DANCE_ENABLE)
+    case TD_SPC:
 #endif
     case MT_BSPC:
     case MLT_ENT:
@@ -381,7 +382,7 @@ void td_space_finished(tap_dance_state_t *state, void *user_data) {
     td_space_state = current_dance(state);
     switch (td_space_state)
     {
-    case TAPPING ... JUST_HOLD:           
+    case JUST_HOLD:           
         if (IS_LAYER_OFF(_QW)) {
             layer_on(_FN);
         } else {
@@ -411,7 +412,7 @@ void td_space_finished(tap_dance_state_t *state, void *user_data) {
 void td_space_reset(tap_dance_state_t *state, void *user_data) {
     switch (td_space_state)
     {
-    case TAPPING ... JUST_HOLD:
+    case JUST_HOLD:
         if (IS_LAYER_OFF(_QW)) {
             layer_off(_FN);
         } else {

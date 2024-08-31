@@ -53,5 +53,3 @@ enum layer_names {
 #ifdef ALT_TABLE_DANCE_ENABLE 
 #define TD_TABA TD(ALT_TABLE)   
 #endif
-#define TD_COMM TD(COMMA_DANCE)
-#define TD_DOT  TD(DOT_DANCE)

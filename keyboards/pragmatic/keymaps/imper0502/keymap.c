@@ -1,4 +1,4 @@
-/* Copyright 2023 Joey Wu
+/* Copyright 2021 imper0502
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,15 +22,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_DEL , KC_CIRC, KC_AT  , KC_HASH, KC_LPRN, KC_RPRN,                   KC_DLR , KC_AMPR, KC_ASTR, KC_QUES, KC_EXLM, KC_GRV ,
         KC_TAB , KC_Q   , KC_W   , KC_F   , KC_P   , KC_B   ,                   KC_J   , KC_L   , KC_U   , KC_Y   , KC_MINS, KC_EQL ,
         MT_ESC , KC_A   , KC_R   , KC_S   , KC_T   , KC_G   ,                   KC_M   , KC_N   , KC_E   , KC_I   , KC_O   , RGUI_T(KC_SLSH),
-        KC_LALT, KC_Z   , KC_X   , KC_C   , KC_D   , KC_V   ,                   KC_K   , KC_H   , KC_COMM, KC_DOT , KC_QUOT, KC_RALT,                       
+        KC_LALT, KC_Z   , KC_X   , KC_C   , KC_D   , KC_V   ,                   KC_K   , KC_H   , KC_COMM, KC_DOT , KC_QUOT, KC_RALT,
                                    TD_INSP, TD_LCTL, OS_LSFT, MT_BSPC, TD_ENT , TD_SPC , TD_BSLS, TD_TABA
     ),
-    [_QW] = LAYOUT_54keys(
+    [_QW] = LAYOUT_56keys(
         KC_GRV , KC_1   , KC_2   , KC_3   , KC_4   , KC_5   ,                   KC_6   , KC_7   , KC_8   , KC_9   , KC_0   , KC_EQL ,
         KC_TAB , KC_Q   , KC_W   , KC_E   , KC_R   , KC_T   ,                   KC_Y   , KC_U   , KC_I   , KC_O   , KC_P   , KC_MINS,
         MT_ESC , KC_A   , KC_S   , KC_D   , KC_F   , KC_G   ,                   KC_H   , KC_J   , KC_K   , KC_L   , KC_SCLN, KC_QUOT,
-        KC_LALT, KC_Z   , KC_X   , KC_C   , KC_V   , KC_B   ,                   KC_N   , KC_M   , TD_COMM, TD_DOT , KC_SLSH, KC_RALT,
-                                            _______, _______, _______, _______, _______, _______
+        KC_LALT, KC_Z   , KC_X   , KC_C   , KC_V   , KC_B   ,                   KC_N   , KC_M   , KC_COMM, KC_DOT , KC_SLSH, KC_RALT,
+                                   _______, _______, _______, _______, _______, _______, _______, _______
     ),
     [_NP] = LAYOUT_42keys(
         XXXXXXX, KC_WH_U, KC_WH_L, KC_MS_U, KC_WH_R, KC_BTN4,                   KC_PAST, KC_7   , KC_8   , KC_9   , KC_PPLS, XXXXXXX,
@@ -64,6 +64,9 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 #if defined(TAP_DANCE_ENABLE) && defined(INSERT_PLUS_DANCE_ENABLE)
     case TD_INSP:
         return TAPPING_TERM * 2;
+#endif
+#if defined(TAP_DANCE_ENABLE) && defined(SPACE_DANCE_ENABLE)
+    case TD_SPC:
 #endif
     case MT_BSPC:
     case MLT_ENT:
@@ -322,7 +325,7 @@ void td_space_finished(tap_dance_state_t *state, void *user_data) {
     td_space_state = current_dance(state);
     switch (td_space_state)
     {
-    case TAPPING ... JUST_HOLD:           
+    case JUST_HOLD:           
         if (IS_LAYER_OFF(_QW)) {
             layer_on(_FN);
         } else {
@@ -352,7 +355,7 @@ void td_space_finished(tap_dance_state_t *state, void *user_data) {
 void td_space_reset(tap_dance_state_t *state, void *user_data) {
     switch (td_space_state)
     {
-    case TAPPING ... JUST_HOLD:
+    case JUST_HOLD:
         if (IS_LAYER_OFF(_QW)) {
             layer_off(_FN);
         } else {
