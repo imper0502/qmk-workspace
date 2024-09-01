@@ -134,10 +134,6 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     case TD_INSP:
         return TAPPING_TERM * 2;
 #endif
-#if defined(TAP_DANCE_ENABLE) && defined(SPACE_DANCE_ENABLE)
-    case TD_SPC:
-        return TAPPING_TERM - 64;
-#endif
     case MT_BSPC:
     case MLT_ENT:
     case LT_SPC:
