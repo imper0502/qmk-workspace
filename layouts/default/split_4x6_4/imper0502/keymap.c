@@ -54,13 +54,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     )
 };
 
-/* LED Behavior */
-#if defined(LED_PIN_ON_STATE) && defined(TXLED) && defined(RXLED)
+bool is_idle_timeout = true;
 void keyboard_pre_init_user(void) {
+#if defined(LED_PIN_ON_STATE) && defined(TXLED) && defined(RXLED)
     setPinOutput(TXLED);
     setPinOutput(RXLED);
+#endif
 }
 
+#if defined(LED_PIN_ON_STATE) && defined(TXLED) && defined(RXLED)
 typedef enum {
     OFF, FLASH, ON
 } led_status_t;
@@ -83,10 +85,18 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     }
   return state;
 }
+#endif
 
+uint16_t is_idle_timer = 0;
+#if defined(LED_PIN_ON_STATE) && defined(TXLED) && defined(RXLED)
 uint16_t _timer = 0;
 bool next_led_pins_state = !LED_PIN_ON_STATE;
+#endif
 void matrix_scan_user(void) {
+    if (!is_idle_timeout) {
+        is_idle_timeout = timer_elapsed(is_idle_timer) > TAPPING_TERM;
+    }
+#if defined(LED_PIN_ON_STATE) && defined(TXLED) && defined(RXLED)
     switch (tx_led_status) {
     case ON:
         next_led_pins_state = LED_PIN_ON_STATE;
@@ -110,8 +120,8 @@ void matrix_scan_user(void) {
         break;
     }
     writePin(TXLED, next_led_pins_state);
-}
 #endif
+}
 
 /* Key Behavior */
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
@@ -180,6 +190,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 }
 
 void post_process_record_user(uint16_t keycode, keyrecord_t *record) {
+    if (!record->event.pressed) {
+        is_idle_timeout = false;
+        is_idle_timer = timer_read();
+    }
     switch (keycode) {
     case KC_ESC:
     case KC_CAPS:
@@ -385,25 +399,22 @@ void td_space_finished(tap_dance_state_t *state, void *user_data) {
     td_space_state = current_dance(state);
     switch (td_space_state)
     {
-    case JUST_HOLD:           
-        if (IS_LAYER_OFF(_QW)) {
+    case TAPPING:
+        if (is_idle_timeout) {
             layer_on(_FN);
         } else {
             register_code(KC_SPC);
         }
+    case JUST_HOLD:       
+            layer_on(_FN);
         break;
     case DUAL_TAP:
         tap_code(KC_SPC);
         register_code(KC_SPC);
         break;
-    case DUAL_TAPPING ... TAP_AND_HOLD:
-        if (IS_LAYER_OFF(_QW)) {
-            register_mods(MOD_LSFT);
-            layer_on(_FN);
-        } else {
-            tap_code(KC_SPC);
-            register_code(KC_SPC);
-        }
+    case DUAL_TAPPING ... TAP_AND_HOLD:        
+        register_mods(MOD_LSFT);
+        layer_on(_FN);
         break;
     default:
         register_code(KC_SPC); 
@@ -415,6 +426,12 @@ void td_space_finished(tap_dance_state_t *state, void *user_data) {
 void td_space_reset(tap_dance_state_t *state, void *user_data) {
     switch (td_space_state)
     {
+    case TAPPING:
+        if (is_idle_timeout) {
+            layer_off(_FN);
+        } else {
+            unregister_code(KC_SPC);
+        }
     case JUST_HOLD:
         if (IS_LAYER_OFF(_QW)) {
             layer_off(_FN);
