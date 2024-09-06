@@ -28,24 +28,13 @@ enum layer_names {
 #define MT_BSPC ALT_T(KC_BSPC)
 #define OS_LSFT OSM(MOD_LSFT)
 
-#define MLT_ENT LT(_BS, KC_ENT)
-#define LT_SPC  LT(_FN, KC_SPC)
 #define LT_BTN3 LT(_FN, KC_BTN3)
 
-#define LA_LCTL LATL(KC_LCTL)
-#define RA_RCTL RATL(KC_RCTL)
+#define LA_LCTL LALT(KC_LCTL)
+#define RA_RCTL RALT(KC_RCTL)
 
-#ifdef CONTROL_DANCE_ENABLE  
-#define TD_LCTL TD(CONTROL_DANCE)
-#endif
 #ifdef MINUS_DANCE_ENABLE
 #define TD_MINS TD(MINUS_DANCE)
-#endif
-#ifdef ENTER_DANCE_ENABLE
-#define TD_ENT  TD(ENTER_DANCE)
-#endif
-#ifdef SPACE_DANCE_ENABLE
-#define TD_SPC  TD(SPACE_DANCE)
 #endif
 #ifdef BACKSLASH_DANCE_ENABLE
 #define TD_BSLS TD(BACKSLASH_DANCE)

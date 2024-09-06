@@ -2,17 +2,11 @@
 #pragma once
 
 enum tap_dance_names {
-#ifdef CONTROL_DANCE_ENABLE  
     CONTROL_DANCE,
-#endif
+    ENTER_DANCE,
+    SPACE_DANCE,
 #ifdef MINUS_DANCE_ENABLE
     MINUS_DANCE,
-#endif
-#ifdef ENTER_DANCE_ENABLE
-    ENTER_DANCE,
-#endif
-#ifdef SPACE_DANCE_ENABLE
-    SPACE_DANCE,
 #endif
 #ifdef BACKSLASH_DANCE_ENABLE
     BACKSLASH_DANCE,
@@ -76,22 +70,19 @@ td_state_t current_dance(tap_dance_state_t *state) {
     }
 }
 
-#ifdef CONTROL_DANCE_ENABLE
 void td_left_control_finished(tap_dance_state_t *state, void *user_data);
 void td_left_control_plus_reset(tap_dance_state_t *state, void *user_data);
-#endif
-#ifdef MINUS_DANCE_ENABLE
-void td_minus_finished(tap_dance_state_t *state, void *user_data);
-void td_minus_reset(tap_dance_state_t *state, void *user_data);
-#endif
-#ifdef ENTER_DANCE_ENABLE
+
 void td_enter_finished(tap_dance_state_t *state, void *user_data);
 void td_enter_reset(tap_dance_state_t *state, void *user_data);
-#endif
-#ifdef SPACE_DANCE_ENABLE
+
 void td_space_each_tap(tap_dance_state_t *state, void *user_data);
 void td_space_finished(tap_dance_state_t *state, void *user_data);
 void td_space_reset(tap_dance_state_t *state, void *user_data);
+
+#ifdef MINUS_DANCE_ENABLE
+void td_minus_finished(tap_dance_state_t *state, void *user_data);
+void td_minus_reset(tap_dance_state_t *state, void *user_data);
 #endif
 #ifdef BACKSLASH_DANCE_ENABLE
 void td_backslash_finished(tap_dance_state_t *state, void *user_data);
@@ -111,17 +102,11 @@ void td_alt_tab_finished(tap_dance_state_t *state, void *user_data);
 #endif
 
 tap_dance_action_t tap_dance_actions[] = {
-#ifdef CONTROL_DANCE_ENABLE
     [CONTROL_DANCE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_left_control_finished, td_left_control_plus_reset),
-#endif
+    [ENTER_DANCE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_enter_finished, td_enter_reset),
+    [SPACE_DANCE] = ACTION_TAP_DANCE_FN_ADVANCED(td_space_each_tap, td_space_finished, td_space_reset),
 #ifdef MINUS_DANCE_ENABLE
     [MINUS_DANCE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_minus_finished, td_minus_reset),
-#endif
-#ifdef ENTER_DANCE_ENABLE
-    [ENTER_DANCE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_enter_finished, td_enter_reset),
-#endif
-#ifdef SPACE_DANCE_ENABLE
-    [SPACE_DANCE] = ACTION_TAP_DANCE_FN_ADVANCED(td_space_each_tap, td_space_finished, td_space_reset),
 #endif
 #ifdef BACKSLASH_DANCE_ENABLE
     [BACKSLASH_DANCE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_backslash_finished, td_backslash_reset),
@@ -138,3 +123,7 @@ tap_dance_action_t tap_dance_actions[] = {
     [COMMA_DANCE] = ACTION_TAP_DANCE_DOUBLE(KC_COMMA, KC_SEMICOLON),
     [DOT_DANCE] = ACTION_TAP_DANCE_DOUBLE(KC_DOT, KC_COLON)
 };
+
+#define TD_LCTL TD(CONTROL_DANCE)
+#define TD_ENT  TD(ENTER_DANCE)
+#define TD_SPC  TD(SPACE_DANCE)

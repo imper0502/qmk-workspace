@@ -29,7 +29,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_GRV , KC_1   , KC_2   , KC_3   , KC_4   , KC_5   ,                   KC_6   , KC_7   , KC_8   , KC_9   , KC_0   , KC_EQL ,
         KC_TAB , KC_Q   , KC_W   , KC_E   , KC_R   , KC_T   ,                   KC_Y   , KC_U   , KC_I   , KC_O   , KC_P   , KC_MINS,
         MT_ESC , KC_A   , KC_S   , KC_D   , KC_F   , KC_G   ,                   KC_H   , KC_J   , KC_K   , KC_L   , KC_SCLN, KC_QUOT,
-        KC_LALT, KC_Z   , KC_X   , KC_C   , KC_V   , KC_B   ,                   KC_N   , KC_M   , KC_COMM, KC_DOT , KC_SLSH, KC_RALT,
+        KC_LSFT, KC_Z   , KC_X   , KC_C   , KC_V   , KC_B   ,                   KC_N   , KC_M   , KC_COMM, KC_DOT , KC_SLSH, KC_RSFT,
                                    _______, _______, _______, _______, _______, _______, _______, _______
     ),
     [_NP] = LAYOUT_split_4x6_4(
@@ -127,19 +127,16 @@ void matrix_scan_user(void) {
 /* Key Behavior */
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-#if defined(TAP_DANCE_ENABLE) && defined(ALT_TABLE_DANCE_ENABLE)
+#ifdef ALT_TABLE_DANCE_ENABLE
     case TD_TABA:
         return TAPPING_TERM * 4;
 #endif
-#if defined(TAP_DANCE_ENABLE) && defined(INSERT_PLUS_DANCE_ENABLE)
+#ifdef INSERT_PLUS_DANCE_ENABLE
     case TD_INSP:
-        return TAPPING_TERM * 2;
 #endif
     case MT_BSPC:
-    case MLT_ENT:
-    case LT_SPC:
     case LT_BTN3:
-        return TAPPING_TERM - 32;
+        return TAPPING_TERM - 64;
     default:
         return TAPPING_TERM;
     }
@@ -167,97 +164,215 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         record->tap.count
     );
 #endif
-    
-    switch (keycode) {
-    case MLT_ENT:
-        if (!record->tap.count) {
-            if (record->event.pressed) {
-                register_mods(MOD_LALT);
-                layer_on(_FN);
-            } else {
-                layer_off(_FN);
-                tap_code(KC_RCTL);
-                unregister_mods(MOD_LALT);
-            }
-            return false;
-        }
-        break;
-    }
     return true;
 }
 
 void post_process_record_user(uint16_t keycode, keyrecord_t *record) {
-    if (!record->event.pressed) {
-        is_idle_timeout = false;
-        is_idle_timer = timer_read();
-    }
+    // if (IS_LAYER_ON(_FN)) {
+    //     return;
+    // }
+    // if (get_mods() & MOD_MASK_CSAG) {
+    //     return;
+    // }
     switch (keycode) {
-    case KC_ESC:
-    case KC_CAPS:
+    // case KC_HOME:
+    // case KC_LEFT:
+    // case KC_PGUP:
+    // case KC_PGDN:
+    // case KC_ESC:
+    // case KC_UP:
+    // case KC_END:
+    // case KC_DOWN:
+    // case KC_RGHT:
+    // case KC_CAPS:
+    case KC_BSPC:
+    case MT_BSPC:
+        return;
     case TO(_BS):
         clear_mods();
     default:
+        if (!record->event.pressed) {
+            is_idle_timeout = false;
+            is_idle_timer = timer_read();
+        }
         return;
     }
 }
 
 /* Tap Dance Behavior */
-#ifdef TAP_DANCE_ENABLE
-static td_state_t td_state;
-#endif
-
-#if defined(TAP_DANCE_ENABLE) && defined(CONTROL_DANCE_ENABLE)
 static td_state_t td_control_state;
 
 void td_left_control_finished(tap_dance_state_t *state, void *user_data) {
     td_control_state = current_dance(state);
-    switch (td_control_state) {
-        case JUST_TAP ... JUST_HOLD:
-            register_mods(MOD_LCTL);
-            break;
-        case DUAL_TAPPING ... TAP_AND_HOLD:
-            register_mods(MOD_LSFT|MOD_LCTL);
-            break;
-        case TRI_TAPPING ... TAP_TAP_HOLD:
-            layer_invert(_MK);
-            break;
-        default:
-            return;
+    switch (td_control_state)
+    {
+    case TRI_TAPPING ... TAP_TAP_HOLD:
+        layer_invert(_MK);
+        break;
+    case DUAL_TAPPING ... TAP_AND_HOLD:
+        register_mods(MOD_LSFT|MOD_LCTL);
+        break;
+    case TRI_TAP:
+        tap_code(KC_LCTL);
+    case DUAL_TAP:
+        tap_code(KC_LCTL);
+    default:
+        register_mods(MOD_LCTL);
+        return;
     }
     return;
 }
 
 void td_left_control_plus_reset(tap_dance_state_t *state, void *user_data) {
-    switch (td_control_state) {
-        case JUST_TAP ... JUST_HOLD: 
-            unregister_mods(MOD_LCTL);
-            break;
-        case DUAL_TAP:    
-            tap_code(KC_LCTL); 
-            tap_code(KC_LCTL); 
-            break;
-        case DUAL_TAPPING ... TAP_AND_HOLD:
-            unregister_mods(MOD_LSFT|MOD_LCTL); 
-            break;
-        case TRI_TAP ... TAP_TAP_HOLD: 
-            layer_invert(_MK); 
-            break;
-        default:
-            return;
+    switch (td_control_state) 
+    {
+    case TRI_TAP ... TAP_TAP_HOLD: 
+        layer_invert(_MK); 
+        break;
+    case DUAL_TAPPING ... TAP_AND_HOLD:
+        unregister_mods(MOD_LSFT|MOD_LCTL); 
+        break;
+    default:
+        unregister_mods(MOD_LCTL);
+        return;
     }
     return;
 }
-#endif
 
-#if defined(TAP_DANCE_ENABLE) && defined(MINUS_DANCE_ENABLE)
+static td_state_t td_enter_state;
+
+void td_enter_finished(tap_dance_state_t *state, void *user_data) {
+    td_enter_state = current_dance(state);
+    switch (td_enter_state)
+    {
+    case DUAL_TAPPING ... TAP_AND_HOLD:
+        register_mods(MOD_LSFT|MOD_LALT);
+        layer_on(_FN);
+        break;
+    case TAPPING ... JUST_HOLD:
+        register_mods(MOD_LALT);
+        layer_on(_FN);
+        break;
+    case TRI_TAP:
+        tap_code(KC_ENT);
+    case DUAL_TAP:
+        tap_code(KC_ENT);
+    default:
+        register_code(KC_ENT); 
+        return;
+    }
+    return;
+}
+
+void td_enter_reset(tap_dance_state_t *state, void *user_data) {
+    switch (td_enter_state) 
+    {    
+    case DUAL_TAPPING ... TAP_AND_HOLD:
+        layer_off(_FN);
+        unregister_mods(MOD_LSFT|MOD_LALT);
+        break;
+    case TAPPING ... JUST_HOLD:
+        layer_off(_FN);
+        tap_code(KC_F18);
+        unregister_mods(MOD_LALT);
+        break;
+    default:
+        unregister_code(KC_ENT);
+        return;
+    }
+    return;
+}
+
+typedef struct {
+    bool is_hold_on_action;
+    td_state_t state;
+} td_tap_t;
+
+static td_tap_t td_space_tapping = {
+    .is_hold_on_action = true,
+    .state = OTHERWISE
+};
+
+void td_space_each_tap(tap_dance_state_t *state, void *user_data) {
+    switch (state->count)
+    {
+    case 1 ... 2:
+        break;
+    case 3:
+        tap_code(KC_SPACE);
+    default:
+        tap_code(KC_SPACE);
+        break;
+    }
+    return;
+}
+
+void td_space_finished(tap_dance_state_t *state, void *user_data) {
+    td_space_tapping.state = current_dance(state);
+    switch (td_space_tapping.state)
+    {
+    case DUAL_TAPPING ... TAP_AND_HOLD:        
+        register_mods(MOD_LSFT);
+        layer_on(_FN);
+        break;
+    case DUAL_TAP:
+        tap_code(KC_SPC);
+        register_code(KC_SPC);
+        break;
+    case JUST_HOLD:       
+        layer_on(_FN);
+        break;
+    case TAPPING:
+        if (is_idle_timeout) {
+            td_space_tapping.is_hold_on_action = true;
+            layer_on(_FN);
+        } else {
+            td_space_tapping.is_hold_on_action = false;
+            register_code(KC_SPC);
+        }
+        break;
+    default:
+        register_code(KC_SPC); 
+        return;
+    }
+    return;
+}
+
+void td_space_reset(tap_dance_state_t *state, void *user_data) {
+    switch (td_space_tapping.state)
+    {
+    case DUAL_TAPPING ... TAP_AND_HOLD:
+        layer_off(_FN);
+        unregister_mods(MOD_LSFT);
+        break;
+    case JUST_HOLD:
+        layer_off(_FN);
+        break;
+    case TAPPING:
+        if (td_space_tapping.is_hold_on_action) {
+            layer_off(_FN);
+        } else {
+            unregister_code(KC_SPC);
+        }
+        break;
+    default:
+        unregister_code(KC_SPC);
+        return;
+    }
+    return;
+}
+
+#ifdef MINUS_DANCE_ENABLE
+static td_state_t td_minus_state;
+
 void td_minus_finished(tap_dance_state_t *state, void *user_data) {
-    td_state = current_dance(state);
-    switch (td_state) {
+    td_minus_state = current_dance(state);
+    switch (td_minus_state) {
         case JUST_TAP:
             if (!state->pressed) {
                 register_code(KC_MINUS); break;
             }
-            td_state = JUST_HOLD;
+            td_minus_state = JUST_HOLD;
         case JUST_HOLD:             
             register_mods(MOD_LCTL);
             layer_on(_FN);
@@ -275,7 +390,7 @@ void td_minus_finished(tap_dance_state_t *state, void *user_data) {
 }
 
 void td_minus_reset(tap_dance_state_t *state, void *user_data) {
-    switch (td_state) {
+    switch (td_minus_state) {
         case JUST_TAP:                 
             unregister_code(KC_MINUS); break;
         case JUST_HOLD: 
@@ -294,165 +409,7 @@ void td_minus_reset(tap_dance_state_t *state, void *user_data) {
 }
 #endif
 
-#if defined(TAP_DANCE_ENABLE) && defined(ENTER_DANCE_ENABLE)
-static td_state_t td_enter_state;
-
-void td_enter_finished(tap_dance_state_t *state, void *user_data) {
-    td_enter_state = current_dance(state);
-    switch (td_enter_state) {
-        case TAPPING ... JUST_HOLD:           
-            if (IS_LAYER_OFF(_QW)) {
-                register_mods(MOD_LALT);
-                layer_on(_FN);
-            } else {
-                register_code(KC_ENT);
-            }
-            break;
-        case DUAL_TAPPING ... TAP_AND_HOLD:
-            if (IS_LAYER_OFF(_QW)) {
-                register_mods(MOD_LSFT|MOD_LALT);
-                layer_on(_FN);
-            } else {
-                tap_code(KC_ENT);
-                register_code(KC_ENT);
-            }
-            break;
-        case TRI_TAPPING ... TAP_TAP_HOLD:
-            if (IS_LAYER_OFF(_QW)) {
-                register_mods(MOD_LSFT);
-                layer_on(_FN);
-            } else {
-                tap_code(KC_ENT);
-                tap_code(KC_ENT);
-                register_code(KC_ENT);
-            }
-            break;
-        case TRI_TAP:
-            tap_code(KC_ENT);
-        case DUAL_TAP:
-            tap_code(KC_ENT);
-        case JUST_TAP:
-        default:
-            register_code(KC_ENT); 
-            return;
-    }
-    return;
-}
-
-void td_enter_reset(tap_dance_state_t *state, void *user_data) {
-    switch (td_enter_state) {
-        case TAPPING ... JUST_HOLD:
-            if (IS_LAYER_OFF(_QW)) {
-                layer_off(_FN);
-                tap_code(KC_RCTL);
-                unregister_mods(MOD_LALT);
-            } else {
-                unregister_code(KC_ENT);
-            }
-            break;
-        case DUAL_TAPPING ... TAP_AND_HOLD:
-            if (IS_LAYER_OFF(_QW)) {
-                layer_off(_FN);
-                unregister_mods(MOD_LSFT|MOD_LALT);
-            } else {
-                unregister_code(KC_ENT);
-            }
-            break;
-        case TRI_TAPPING ... TAP_TAP_HOLD:
-            if (IS_LAYER_OFF(_QW)) {
-                layer_off(_FN);
-                unregister_mods(MOD_LSFT);
-            } else {
-                unregister_code(KC_ENT);
-            }
-            break;
-        default:
-            unregister_code(KC_ENT);
-            return;
-    }
-    return;
-}
-#endif
-
-#if defined(TAP_DANCE_ENABLE) && defined(SPACE_DANCE_ENABLE)
-static td_state_t td_space_state;
-
-void td_space_each_tap(tap_dance_state_t *state, void *user_data) {
-    switch (state->count)
-    {
-    case 1 ... 2:
-        /* code */
-        break;
-    case 3:
-        tap_code(KC_SPACE);
-    default:
-        tap_code(KC_SPACE);
-        break;
-    }
-    return;
-}
-
-void td_space_finished(tap_dance_state_t *state, void *user_data) {
-    td_space_state = current_dance(state);
-    switch (td_space_state)
-    {
-    case TAPPING:
-        if (is_idle_timeout) {
-            layer_on(_FN);
-        } else {
-            register_code(KC_SPC);
-        }
-    case JUST_HOLD:       
-            layer_on(_FN);
-        break;
-    case DUAL_TAP:
-        tap_code(KC_SPC);
-        register_code(KC_SPC);
-        break;
-    case DUAL_TAPPING ... TAP_AND_HOLD:        
-        register_mods(MOD_LSFT);
-        layer_on(_FN);
-        break;
-    default:
-        register_code(KC_SPC); 
-        return;
-    }
-    return;
-}
-
-void td_space_reset(tap_dance_state_t *state, void *user_data) {
-    switch (td_space_state)
-    {
-    case TAPPING:
-        if (is_idle_timeout) {
-            layer_off(_FN);
-        } else {
-            unregister_code(KC_SPC);
-        }
-    case JUST_HOLD:
-        if (IS_LAYER_OFF(_QW)) {
-            layer_off(_FN);
-        } else {
-            unregister_code(KC_SPC);
-        }
-        break;
-    case DUAL_TAPPING ... TAP_AND_HOLD:
-        if (IS_LAYER_OFF(_QW)) {
-            layer_off(_FN);
-            unregister_mods(MOD_LSFT);
-        } else {
-            unregister_code(KC_SPC);
-        }
-        break;
-    default:
-        unregister_code(KC_SPC);
-        return;
-    }
-    return;
-}
-#endif
-
-#if defined(TAP_DANCE_ENABLE) && defined(BACKSLASH_DANCE_ENABLE)
+#ifdef BACKSLASH_DANCE_ENABLE
 static td_state_t td_backslash_state;
 
 void td_backslash_finished(tap_dance_state_t *state, void *user_data) {
@@ -583,8 +540,9 @@ void td_table_reset(tap_dance_state_t *state, void *user_data) {
 }
 #endif
 
-#if defined(TAP_DANCE_ENABLE) && defined(INSERT_PLUS_DANCE_ENABLE)
+#ifdef INSERT_PLUS_DANCE_ENABLE
 static uint8_t mod_state;
+static td_state_t td_state;
 void td_insert_plus_finished(tap_dance_state_t *state, void *user_data) {
     mod_state = get_mods();
     td_state = current_dance(state);
@@ -621,7 +579,7 @@ void td_insert_plus_reset(tap_dance_state_t *state, void *user_data) {
 }
 #endif
 
-#if defined(TAP_DANCE_ENABLE) && defined(ALT_TABLE_DANCE_ENABLE)
+#ifdef ALT_TABLE_DANCE_ENABLE
 void td_alt_tab_each_tap(tap_dance_state_t *state, void *user_data) {
     switch (state->count) {
         case 1: add_mods(MOD_LALT);
