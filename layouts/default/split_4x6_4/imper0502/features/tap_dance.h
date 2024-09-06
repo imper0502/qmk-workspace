@@ -17,6 +17,9 @@ enum tap_dance_names {
 #ifdef BACKSLASH_DANCE_ENABLE
     BACKSLASH_DANCE,
 #endif
+#ifdef TABLE_DANCE_ENABLE
+    TABLE_DANCE,
+#endif
 #ifdef INSERT_PLUS_DANCE_ENABLE 
     INSERT_PLUS,
 #endif
@@ -94,6 +97,10 @@ void td_space_reset(tap_dance_state_t *state, void *user_data);
 void td_backslash_finished(tap_dance_state_t *state, void *user_data);
 void td_backslash_reset(tap_dance_state_t *state, void *user_data);
 #endif
+#ifdef TABLE_DANCE_ENABLE
+void td_table_finished(tap_dance_state_t *state, void *user_data);
+void td_table_reset(tap_dance_state_t *state, void *user_data);
+#endif
 #ifdef INSERT_PLUS_DANCE_ENABLE
 void td_insert_plus_finished(tap_dance_state_t *state, void *user_data);
 void td_insert_plus_reset(tap_dance_state_t *state, void *user_data);
@@ -118,6 +125,9 @@ tap_dance_action_t tap_dance_actions[] = {
 #endif
 #ifdef BACKSLASH_DANCE_ENABLE
     [BACKSLASH_DANCE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_backslash_finished, td_backslash_reset),
+#endif
+#ifdef TABLE_DANCE_ENABLE
+    [TABLE_DANCE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_table_finished, td_table_reset),
 #endif
 #ifdef INSERT_PLUS_DANCE_ENABLE
     [INSERT_PLUS] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_insert_plus_finished, td_insert_plus_reset),

@@ -32,6 +32,9 @@ enum layer_names {
 #define LT_SPC  LT(_FN, KC_SPC)
 #define LT_BTN3 LT(_FN, KC_BTN3)
 
+#define LA_LCTL LATL(KC_LCTL)
+#define RA_RCTL RATL(KC_RCTL)
+
 #ifdef CONTROL_DANCE_ENABLE  
 #define TD_LCTL TD(CONTROL_DANCE)
 #endif
@@ -47,6 +50,10 @@ enum layer_names {
 #ifdef BACKSLASH_DANCE_ENABLE
 #define TD_BSLS TD(BACKSLASH_DANCE)
 #endif
+#ifdef TABLE_DANCE_ENABLE
+#define TD_RTAB TD(TABLE_DANCE)
+#endif
+
 #ifdef INSERT_PLUS_DANCE_ENABLE
 #define TD_INSP TD(INSERT_PLUS)
 #endif

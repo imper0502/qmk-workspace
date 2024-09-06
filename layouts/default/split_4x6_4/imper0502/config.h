@@ -18,6 +18,7 @@
 #define ENTER_DANCE_ENABLE true
 #define SPACE_DANCE_ENABLE true
 #define BACKSLASH_DANCE_ENABLE true
+#define TABLE_DANCE_ENABLE true
 #define INSERT_PLUS_DANCE_ENABLE true
 #define ALT_TABLE_DANCE_ENABLE true
 

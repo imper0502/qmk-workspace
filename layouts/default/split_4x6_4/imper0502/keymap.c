@@ -19,11 +19,11 @@
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_BS] = LAYOUT_split_4x6_4(
-        KC_DEL , KC_CIRC, KC_AT  , KC_HASH, KC_LPRN, KC_RPRN,                   KC_DLR , KC_AMPR, KC_ASTR, KC_QUES, KC_EXLM, KC_GRV ,
+        KC_BTN4, KC_BTN5, KC_AT  , KC_HASH, KC_LPRN, KC_RPRN,                   KC_CIRC, KC_AMPR, KC_ASTR, KC_DLR , KC_GRV , KC_BSLS,
         KC_TAB , KC_Q   , KC_W   , KC_F   , KC_P   , KC_B   ,                   KC_J   , KC_L   , KC_U   , KC_Y   , KC_MINS, KC_EQL ,
-        MT_ESC , KC_A   , KC_R   , KC_S   , KC_T   , KC_G   ,                   KC_M   , KC_N   , KC_E   , KC_I   , KC_O   , RGUI_T(KC_SLSH),
-        KC_LALT, KC_Z   , KC_X   , KC_C   , KC_D   , KC_V   ,                   KC_K   , KC_H   , KC_COMM, KC_DOT , KC_QUOT, KC_RALT,
-                                   TD_INSP, TD_LCTL, OS_LSFT, MT_BSPC, TD_ENT , TD_SPC , TD_BSLS, TD_TABA
+        MT_ESC , KC_A   , KC_R   , KC_S   , KC_T   , KC_G   ,                   KC_M   , KC_N   , KC_E   , KC_I   , KC_O   , KC_SLSH,
+        LA_LCTL, KC_Z   , KC_X   , KC_C   , KC_D   , KC_V   ,                   KC_K   , KC_H   , KC_COMM, KC_DOT , KC_QUOT, RA_RCTL,
+                                   TD_INSP, TD_LCTL, OS_LSFT, MT_BSPC, TD_ENT , TD_SPC , TD_RTAB, XXXXXXX
     ),
     [_QW] = LAYOUT_split_4x6_4(
         KC_GRV , KC_1   , KC_2   , KC_3   , KC_4   , KC_5   ,                   KC_6   , KC_7   , KC_8   , KC_9   , KC_0   , KC_EQL ,
@@ -48,9 +48,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
     [_FN] = LAYOUT_split_4x6_4(
         KC_F1  , KC_F2  , KC_3   , KC_F4  , KC_F5  , KC_F6  ,                   KC_F7  , KC_F8  , KC_F9  , KC_F10 , KC_F11 , KC_F12 ,
-        KC_TAB , KC_LCBR, KC_7   , KC_8   , KC_9   , KC_CAPS,                   KC_INS , KC_HOME, KC_UP  , KC_END , KC_RCBR, KC_TAB ,
-        KC_ESC , KC_LBRC, KC_4   , KC_5   , KC_6   , CW_TOGG,                   KC_DEL , KC_LEFT, KC_DOWN, KC_RGHT, KC_RBRC, KC_ESC ,
-        _______, KC_LPRN, KC_1   , KC_2   , KC_3   , TG(_NP),                   TG(_MK), KC_PGUP, KC_LABK, KC_RABK, KC_RPRN, _______,
+        KC_TAB , KC_LCBR, KC_7   , KC_8   , KC_9   , XXXXXXX,                   XXXXXXX, KC_HOME, KC_UP  , KC_END , KC_RCBR, KC_TAB ,
+        KC_ESC , KC_LBRC, KC_4   , KC_5   , KC_6   , KC_CAPS,                   CW_TOGG, KC_LEFT, KC_DOWN, KC_RGHT, KC_RBRC, KC_ESC ,
+        _______, KC_EXLM, KC_1   , KC_2   , KC_3   , TG(_NP),                   TG(_MK), KC_PGUP, KC_LABK, KC_RABK, KC_QUES, _______,
                                    XXXXXXX, KC_DOT , KC_0   , KC_BSPC, KC_ENT , KC_PSCR, KC_PGDN, XXXXXXX
     )
 };
@@ -526,6 +526,58 @@ void td_backslash_reset(tap_dance_state_t *state, void *user_data) {
         default:
             unregister_code(KC_BSLS);
             return;
+    }
+    return;
+}
+#endif
+
+#ifdef TABLE_DANCE_ENABLE
+static td_state_t td_table_state;
+
+void td_table_finished(tap_dance_state_t *state, void *user_data) {
+    td_table_state = current_dance(state);
+    switch (td_table_state) {
+    case TAPPING ... JUST_HOLD:
+        register_mods(MOD_LCTL);
+        layer_on(_FN);
+        break;
+    case DUAL_TAPPING ... TAP_AND_HOLD:
+        register_mods(MOD_LSFT|MOD_LCTL);
+        layer_on(_FN);
+        break;
+    case TRI_TAPPING ... TAP_TAP_HOLD:
+        register_mods(MOD_LSFT);
+        layer_on(_FN);
+        break;
+    case TRI_TAP:
+        tap_code(KC_TAB);
+    case DUAL_TAP:
+        tap_code(KC_TAB);
+    case JUST_TAP:
+    default:
+        register_code(KC_TAB); 
+        return;
+    }
+    return;
+}
+
+void td_table_reset(tap_dance_state_t *state, void *user_data) {
+    switch (td_table_state) {
+    case TAPPING ... JUST_HOLD:
+        layer_off(_FN); 
+        unregister_mods(MOD_LCTL);
+        break;
+    case DUAL_TAPPING ... TAP_AND_HOLD:
+        layer_off(_FN);
+        unregister_mods(MOD_LSFT|MOD_LCTL);
+        break;
+    case TRI_TAPPING ... TAP_TAP_HOLD:
+        layer_off(_FN);
+        unregister_mods(MOD_LSFT);
+        break;
+    default:
+        unregister_code(KC_TAB);
+        return;
     }
     return;
 }
