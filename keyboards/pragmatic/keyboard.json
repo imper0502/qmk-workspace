@@ -34,9 +34,10 @@
         "term_per_key": true
     },
     "diode_direction": "COL2ROW",
-    "community_layouts": ["split_4x6_4"],
+    "community_layouts": ["split_4x6_4", "split_4x6_3"],
     "layout_aliases": {
-        "LAYOUT_split_4x6_4": "LAYOUT_56keys"
+        "LAYOUT_split_4x6_4": "LAYOUT_56keys",
+        "LAYOUT_split_4x6_3": "LAYOUT_54keys"
     },
     "layouts": {
         "LAYOUT_56keys": {

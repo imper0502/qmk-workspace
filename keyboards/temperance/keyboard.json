@@ -41,9 +41,10 @@
         "rows": ["B5", "B4", "E6", "D7", "C6", "B6", "B2", "B3", "B1", "F7"],
         "cols": ["D4", "D0", "D1", "F6", "F5", "F4"]
     },
-    "community_layouts": ["split_4x6_4"],
+    "community_layouts": ["split_4x6_4", "split_4x6_3"],
     "layout_aliases": {
-        "LAYOUT_split_4x6_4": "LAYOUT_56keys"
+        "LAYOUT_split_4x6_4": "LAYOUT_56keys",
+        "LAYOUT_split_4x6_3": "LAYOUT_54keys"
     },
     "layouts": {
         "LAYOUT_58keys": {
