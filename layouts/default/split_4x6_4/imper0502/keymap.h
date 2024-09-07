@@ -8,10 +8,6 @@ enum layer_names {
     _FN
 };
 
-#ifdef KEY_OVERRIDE_ENABLE
-#   include "features/key_overriding.h"
-#endif
-
 #ifdef TAP_DANCE_ENABLE
 #   include "features/tap_dance.h"
 #endif
