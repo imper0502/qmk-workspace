@@ -14,10 +14,10 @@
 
 /* Tap Dance Keys Toggle */
 #define MINUS_DANCE_ENABLE false
-#define BACKSLASH_DANCE_ENABLE true
+#define BACKSLASH_DANCE_ENABLE false
 #define TABLE_DANCE_ENABLE true
 #define INSERT_PLUS_DANCE_ENABLE true
-#define ALT_TABLE_DANCE_ENABLE true
+#define ALT_TABLE_DANCE_ENABLE false
 
 /* Mouse Keys Config. */
 #define MK_KINETIC_SPEED
