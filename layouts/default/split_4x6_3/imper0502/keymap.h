@@ -17,6 +17,7 @@ enum layer_names {
 #endif
 
 #define MT_ESC  GUI_T(KC_ESC)
+#define MT_SLSH RGUI_T(KC_SLASH)
 #define MT_BSPC ALT_T(KC_BSPC)
 #define OS_LSFT OSM(MOD_LSFT)
 
