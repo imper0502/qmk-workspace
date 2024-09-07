@@ -20,10 +20,6 @@ enum layer_names {
 #    include "features/key_combo.h"
 #endif
 
-#ifdef CONSOLE_ENABLE
-#    include "print.h"
-#endif
-
 #define MT_ESC  GUI_T(KC_ESC)
 #define MT_BSPC ALT_T(KC_BSPC)
 #define OS_LSFT OSM(MOD_LSFT)

@@ -9,3 +9,7 @@ enum layer_names {
     _MK,
     _FN
 };
+
+#ifdef CONSOLE_ENABLE
+#    include "print.h"
+#endif
