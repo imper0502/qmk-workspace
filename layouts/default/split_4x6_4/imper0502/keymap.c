@@ -55,7 +55,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     )
 };
 
-bool is_idle_timeout = true;
 void keyboard_pre_init_user(void) {
 #if defined(LED_PIN_ON_STATE) && defined(TXLED) && defined(RXLED)
     setPinOutput(TXLED);
@@ -63,6 +62,8 @@ void keyboard_pre_init_user(void) {
 #endif
 }
 
+bool is_idle_timeout = true;
+uint16_t is_idle_timer = 0;
 #if defined(LED_PIN_ON_STATE) && defined(TXLED) && defined(RXLED)
 typedef enum {
     OFF, FLASH, ON
@@ -70,29 +71,11 @@ typedef enum {
 
 led_status_t  rx_led_status;
 led_status_t  tx_led_status;
-layer_state_t layer_state_set_user(layer_state_t state) {
-    switch (get_highest_layer(state)) {
-    case _MK:
-        tx_led_status = FLASH;
-        break;
-    case _NP:
-    case _FN:
-        tx_led_status = ON;
-        break;
-    default:
-        tx_led_status = OFF;
-        rx_led_status = OFF;
-        break;
-    }
-  return state;
-}
-#endif
 
-uint16_t is_idle_timer = 0;
-#if defined(LED_PIN_ON_STATE) && defined(TXLED) && defined(RXLED)
 uint16_t _timer = 0;
 bool next_led_pins_state = !LED_PIN_ON_STATE;
 #endif
+
 void matrix_scan_user(void) {
     if (!is_idle_timeout) {
         is_idle_timeout = timer_elapsed(is_idle_timer) > TAPPING_TERM;
@@ -121,6 +104,25 @@ void matrix_scan_user(void) {
         break;
     }
     writePin(TXLED, next_led_pins_state);
+#endif
+}
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+#if defined(LED_PIN_ON_STATE) && defined(TXLED) && defined(RXLED)
+    switch (get_highest_layer(state)) {
+    case _MK:
+        tx_led_status = FLASH;
+        break;
+    case _NP:
+    case _FN:
+        tx_led_status = ON;
+        break;
+    default:
+        tx_led_status = OFF;
+        rx_led_status = OFF;
+        break;
+    }
+  return state;
 #endif
 }
 
