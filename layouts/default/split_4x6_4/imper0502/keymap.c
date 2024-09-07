@@ -145,23 +145,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 }
 
 void post_process_record_user(uint16_t keycode, keyrecord_t *record) {
-    // if (IS_LAYER_ON(_FN)) {
-    //     return;
-    // }
-    // if (get_mods() & MOD_MASK_CSAG) {
-    //     return;
-    // }
     switch (keycode) {
-    // case KC_HOME:
-    // case KC_LEFT:
-    // case KC_PGUP:
-    // case KC_PGDN:
-    // case KC_ESC:
-    // case KC_UP:
-    // case KC_END:
-    // case KC_DOWN:
-    // case KC_RGHT:
-    // case KC_CAPS:
     case KC_BSPC:
     case MT_BSPC:
         return;
