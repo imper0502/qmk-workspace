@@ -16,6 +16,9 @@ enum layer_names {
 #    include "features/key_combo.h"
 #endif
 
+#define WC_LEFT LWIN(C(KC_LEFT))
+#define WC_RGHT LWIN(C(KC_RIGHT))
+
 #define MT_ESC  GUI_T(KC_ESC)
 #define MT_SLSH RGUI_T(KC_SLASH)
 #define MT_BSPC ALT_T(KC_BSPC)
