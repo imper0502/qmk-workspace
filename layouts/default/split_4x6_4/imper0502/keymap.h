@@ -32,6 +32,9 @@ enum layer_names {
 #ifdef MINUS_DANCE_ENABLE
 #define TD_MINS TD(MINUS_DANCE)
 #endif
+#ifdef GRAVE_DANCE_ENABLE
+#define TD_GRV  TD(GRAVE_DANCE)
+#endif
 #ifdef BACKSLASH_DANCE_ENABLE
 #define TD_BSLS TD(BACKSLASH_DANCE)
 #endif

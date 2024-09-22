@@ -8,6 +8,9 @@ enum tap_dance_names {
 #ifdef MINUS_DANCE_ENABLE
     MINUS_DANCE,
 #endif
+#ifdef GRAVE_DANCE_ENABLE
+    GRAVE_DANCE,
+#endif
 #ifdef BACKSLASH_DANCE_ENABLE
     BACKSLASH_DANCE,
 #endif
@@ -84,6 +87,10 @@ void td_space_reset(tap_dance_state_t *state, void *user_data);
 void td_minus_finished(tap_dance_state_t *state, void *user_data);
 void td_minus_reset(tap_dance_state_t *state, void *user_data);
 #endif
+#ifdef GRAVE_DANCE_ENABLE
+void td_grave_finished(tap_dance_state_t *state, void *user_data);
+void td_grave_reset(tap_dance_state_t *state, void *user_data);
+#endif
 #ifdef BACKSLASH_DANCE_ENABLE
 void td_backslash_finished(tap_dance_state_t *state, void *user_data);
 void td_backslash_reset(tap_dance_state_t *state, void *user_data);
@@ -107,6 +114,9 @@ tap_dance_action_t tap_dance_actions[] = {
     [SPACE_DANCE] = ACTION_TAP_DANCE_FN_ADVANCED(td_space_each_tap, td_space_finished, td_space_reset),
 #ifdef MINUS_DANCE_ENABLE
     [MINUS_DANCE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_minus_finished, td_minus_reset),
+#endif
+#ifdef GRAVE_DANCE_ENABLE
+    [GRAVE_DANCE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_grave_finished, td_grave_reset),
 #endif
 #ifdef BACKSLASH_DANCE_ENABLE
     [BACKSLASH_DANCE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_backslash_finished, td_backslash_reset),

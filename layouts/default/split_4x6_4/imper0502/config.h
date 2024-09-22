@@ -14,8 +14,9 @@
 
 /* Tap Dance Keys Toggle */
 #define MINUS_DANCE_ENABLE false
+#define GRAVE_DANCE_ENABLE true
 #define BACKSLASH_DANCE_ENABLE false
-#define TABLE_DANCE_ENABLE true
+#define TABLE_DANCE_ENABLE false
 #define INSERT_PLUS_DANCE_ENABLE true
 #define ALT_TABLE_DANCE_ENABLE false
 

@@ -19,11 +19,11 @@
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_BS] = LAYOUT_split_4x6_4(
-        WC_LEFT, WC_RGHT, KC_AT  , KC_HASH, KC_LPRN, KC_RPRN,                   KC_CIRC, KC_AMPR, KC_ASTR, KC_DLR , KC_GRV , KC_BSLS,
+        WC_LEFT, WC_RGHT, KC_AT  , KC_HASH, KC_LPRN, KC_RPRN,                   KC_CIRC, KC_AMPR, KC_ASTR, KC_DLR , KC_INS , KC_DEL ,
         KC_TAB , KC_Q   , KC_W   , KC_F   , KC_P   , KC_B   ,                   KC_J   , KC_L   , KC_U   , KC_Y   , KC_MINS, KC_EQL ,
         MT_ESC , KC_A   , KC_R   , KC_S   , KC_T   , KC_G   ,                   KC_M   , KC_N   , KC_E   , KC_I   , KC_O   , MT_SLSH,
-        LA_LCTL, KC_Z   , KC_X   , KC_C   , KC_D   , KC_V   ,                   KC_K   , KC_H   , KC_COMM, KC_DOT , KC_QUOT, RA_RCTL,
-                                   TD_INSP, TD_LCTL, OS_LSFT, MT_BSPC, TD_ENT , TD_SPC , TD_RTAB, XXXXXXX
+        LA_LCTL, KC_Z   , KC_X   , KC_C   , KC_D   , KC_V   ,                   KC_K   , KC_H   , KC_COMM, KC_DOT , KC_QUOT, KC_BSLS,
+                                   TD_INSP, TD_LCTL, OS_LSFT, MT_BSPC, TD_ENT , TD_SPC , TD_GRV , XXXXXXX
     ),
     [_QW] = LAYOUT_split_4x6_4(
         KC_GRV , KC_1   , KC_2   , KC_3   , KC_4   , KC_5   ,                   KC_6   , KC_7   , KC_8   , KC_9   , KC_0   , KC_EQL ,
@@ -364,6 +364,50 @@ void td_minus_reset(tap_dance_state_t *state, void *user_data) {
             unregister_mods(MOD_LSFT|MOD_LCTL);
             break;
         default:
+            return;
+    }
+    return;
+}
+#endif
+
+#ifdef GRAVE_DANCE_ENABLE
+static td_state_t td_grave_state;
+
+void td_grave_finished(tap_dance_state_t *state, void *user_data) {
+    td_grave_state = current_dance(state);
+    switch (td_grave_state) {
+        case TAPPING ... JUST_HOLD:           
+            register_mods(MOD_LCTL);
+            layer_on(_FN);
+            break;
+        case DUAL_TAPPING ... TAP_AND_HOLD:
+            register_mods(MOD_LSFT|MOD_LCTL);
+            layer_on(_FN);
+            break;
+        case TRI_TAP:
+            tap_code(KC_GRV);
+        case DUAL_TAP:
+            tap_code(KC_GRV);
+        case JUST_TAP:
+        default:
+            register_code(KC_GRV); 
+            return;
+    }
+    return;
+}
+
+void td_grave_reset(tap_dance_state_t *state, void *user_data) {
+    switch (td_grave_state) {
+        case TAPPING ... JUST_HOLD:
+            layer_off(_FN); 
+            unregister_mods(MOD_LCTL);
+            break;
+        case DUAL_TAPPING ... TAP_AND_HOLD:
+            layer_off(_FN);
+            unregister_mods(MOD_LSFT|MOD_LCTL);
+            break;
+        default:
+            unregister_code(KC_GRV);
             return;
     }
     return;
